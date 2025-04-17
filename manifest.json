@@ -2,7 +2,7 @@
   "name": "Pencarian Multi-Engine",
   "short_name": "MultiCari",
   "description": "Aplikasi sederhana untuk mencari di Google, Bing, dan Brave sekaligus.",
-  "start_url": "/",
+  "start_url": "/search",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#4CAF50",

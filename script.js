@@ -14,70 +14,53 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Fungsi untuk memuat status checkbox dari localStorage
     const loadCheckboxState = () => {
-        const googleChecked = localStorage.getItem('googleChecked');
-        const bingChecked = localStorage.getItem('bingChecked');
-        const braveChecked = localStorage.getItem('braveChecked');
-
-        if (googleChecked !== null) {
-            googleCheckbox.checked = googleChecked === 'true';
-        }
-        if (bingChecked !== null) {
-            bingCheckbox.checked = bingChecked === 'true';
-        }
-        if (braveChecked !== null) {
-            braveCheckbox.checked = braveChecked === 'true';
-        }
+        googleCheckbox.checked = localStorage.getItem('googleChecked') === 'true';
+        bingCheckbox.checked = localStorage.getItem('bingChecked') === 'true';
+        braveCheckbox.checked = localStorage.getItem('braveChecked') === 'true';
     };
 
     // Muat status checkbox saat halaman dimuat
     loadCheckboxState();
 
+    // ========= PERUBAHAN 1: Simpan state saat tab ditutup =========
+    window.addEventListener('beforeunload', saveCheckboxState);
+
     // Tambahkan event listener untuk menyimpan status saat checkbox berubah
-    googleCheckbox.addEventListener('change', saveCheckboxState);
-    bingCheckbox.addEventListener('change', saveCheckboxState);
-    braveCheckbox.addEventListener('change', saveCheckboxState);
+    [googleCheckbox, bingCheckbox, braveCheckbox].forEach(checkbox => {
+        checkbox.addEventListener('change', saveCheckboxState);
+    });
 
     const performSearch = () => {
-        const query = searchInput.value.trim(); // Ambil nilai input & hapus spasi ekstra
+        const query = searchInput.value.trim();
 
-        if (query === "") {
+        if (!query) {
             searchInput.focus();
             searchInput.classList.add('border-red-500');
-            setTimeout(() => {
-                searchInput.classList.remove('border-red-500');
-            }, 1500);
+            setTimeout(() => searchInput.classList.remove('border-red-500'), 1500);
             return;
         }
 
         searchInput.classList.remove('border-red-500');
         const encodedQuery = encodeURIComponent(query);
-        const googleUrl = `https://www.google.com/search?q=${encodedQuery}`;
-        const bingUrl = `https://www.bing.com/search?q=${encodedQuery}`;
-        const braveUrl = `https://search.brave.com/search?q=${encodedQuery}`;
+        
+        // ========= PERUBAHAN 2: Logika pencarian disederhanakan =========
+        const urls = {
+            google: `https://www.google.com/search?q=${encodedQuery}`,
+            bing: `https://www.bing.com/search?q=${encodedQuery}`,
+            brave: `https://search.brave.com/search?q=${encodedQuery}`
+        };
 
-        const isAndroid = /Android/i.test(navigator.userAgent);
+        // Buka semua tab baru dengan parameter khusus
+        const openSearch = (url) => {
+            window.open(url, '_blank', 'noopener,noreferrer'); // Parameter untuk menghindari pemblokiran
+        };
 
-        if (isAndroid) {
-            if (googleCheckbox.checked) window.location.href = googleUrl;
-            if (bingCheckbox.checked && !googleCheckbox.checked) window.location.href = bingUrl;
-            else if (bingCheckbox.checked && googleCheckbox.checked) window.open(bingUrl, '_blank');
-            if (braveCheckbox.checked && !googleCheckbox.checked && !bingCheckbox.checked) window.location.href = braveUrl;
-            else if (braveCheckbox.checked) window.open(braveUrl, '_blank');
-        } else {
-            if (googleCheckbox.checked) window.open(googleUrl, '_blank');
-            if (bingCheckbox.checked) window.open(bingUrl, '_blank');
-            if (braveCheckbox.checked) window.open(braveUrl, '_blank');
-        }
+        // ========= PERUBAHAN 3: Standarisasi perilaku di semua platform =========
+        if (googleCheckbox.checked) openSearch(urls.google);
+        if (bingCheckbox.checked) openSearch(urls.bing);
+        if (braveCheckbox.checked) openSearch(urls.brave);
     };
 
-    // Tambahkan event listener untuk tombol klik
     searchButton.addEventListener('click', performSearch);
-
-    // Tambahkan event listener untuk tombol Enter di input field
-    searchInput.addEventListener('keypress', (event) => {
-        if (event.key === 'Enter') {
-            performSearch(); // Emulasi klik pada tombol Cari
-        }
-        searchInput.classList.remove('border-red-500');
-    });
+    searchInput.addEventListener('keypress', (e) => e.key === 'Enter' && performSearch());
 });

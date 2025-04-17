@@ -3,21 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pencarian Cepat Multi-Engine</title>
+    <title>Pencarian Cepat</title>
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#007AFF"/> <link rel="apple-touch-icon" href="icons/icon-192x192.png">
-    <link rel="icon" href="icons/icon-192x192.png" type="image/png"> </head>
-<body>
-    <main class="container">
-        <header>
-            <h1>Pencarian Cepat</h1>
-            <p>Masukkan kata kunci untuk mencari di Google, Bing, dan Brave sekaligus.</p>
-        </header>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Roboto', 'Arial', 'sans-serif'],
+                    },
+                    colors: {
+                        'googlegray-100': '#f8f9fa',
+                        'googlegray-200': '#e0e0e0',
+                        'googlegray-300': '#9aa0a6',
+                        'googleblue': '#4285f4',
+                        'googleblue-hover': '#3574f0',
+                    },
+                }
+            }
+        }
+    </script>
+    <meta name="theme-color" content="#4285f4"/> <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    <link rel="icon" href="icons/icon-192x192.png" type="image/png">
+</head>
+<body class="bg-googlegray-100 h-screen flex flex-col items-center justify-center transition-colors duration-300">
+    <main class="container flex flex-col items-center">
+        <div class="mb-4">
+            <h1 class="text-5xl font-bold text-googleblue">Pencarian</h1>
+            <p class="text-googlegray-300 text-sm">Multi-Engine</p>
+        </div>
 
-        <div class="search-box">
-            <input type="search" id="searchInput" placeholder="misalnya: teknologi terbaru" aria-label="Kata kunci pencarian">
-            <button id="searchButton">Cari</button>
+        <div class="search-box flex items-center relative w-full max-w-xl">
+            <input type="search" id="searchInput" placeholder="Telusuri" aria-label="Kata kunci pencarian"
+                   class="flex-grow py-3 px-4 rounded-full border border-googlegray-200 bg-googlegray-100 text-googlegray-300 focus:outline-none focus:ring-2 focus:ring-googleblue focus:border-googleblue shadow-md transition-colors duration-300">
+            <button id="searchButton" class="bg-googleblue hover:bg-googleblue-hover text-white font-semibold py-2 px-4 rounded-full focus:outline-none focus:ring-2 focus:ring-googleblue focus:ring-opacity-50 transition-colors duration-300 ml-2">
+                Cari
+            </button>
+        </div>
+
+        <div class="mt-8 flex flex-col items-center">
+            <p class="text-sm text-googlegray-300 mb-2">Pilih Mesin Pencari:</p>
+            <div class="flex gap-4">
+                <div>
+                    <input type="checkbox" id="googleCheckbox" checked class="rounded border-googlegray-200 focus:ring-googleblue transition-colors duration-300">
+                    <label for="googleCheckbox" class="text-sm text-googlegray-300 transition-colors duration-300">Google</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="bingCheckbox" checked class="rounded border-googlegray-200 focus:ring-googleblue transition-colors duration-300">
+                    <label for="bingCheckbox" class="text-sm text-googlegray-300 transition-colors duration-300">Bing</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="braveCheckbox" checked class="rounded border-googlegray-200 focus:ring-googleblue transition-colors duration-300">
+                    <label for="braveCheckbox" class="text-sm text-googlegray-300 transition-colors duration-300">Brave</label>
+                </div>
+            </div>
         </div>
     </main>
 

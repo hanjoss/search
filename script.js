@@ -5,6 +5,38 @@ document.addEventListener('DOMContentLoaded', () => {
     const bingCheckbox = document.getElementById('bingCheckbox');
     const braveCheckbox = document.getElementById('braveCheckbox');
 
+    // Fungsi untuk menyimpan status checkbox ke localStorage
+    const saveCheckboxState = () => {
+        localStorage.setItem('googleChecked', googleCheckbox.checked);
+        localStorage.setItem('bingChecked', bingCheckbox.checked);
+        localStorage.setItem('braveChecked', braveCheckbox.checked);
+    };
+
+    // Fungsi untuk memuat status checkbox dari localStorage
+    const loadCheckboxState = () => {
+        const googleChecked = localStorage.getItem('googleChecked');
+        const bingChecked = localStorage.getItem('bingChecked');
+        const braveChecked = localStorage.getItem('braveChecked');
+
+        if (googleChecked !== null) {
+            googleCheckbox.checked = googleChecked === 'true';
+        }
+        if (bingChecked !== null) {
+            bingCheckbox.checked = bingChecked === 'true';
+        }
+        if (braveChecked !== null) {
+            braveCheckbox.checked = braveChecked === 'true';
+        }
+    };
+
+    // Muat status checkbox saat halaman dimuat
+    loadCheckboxState();
+
+    // Tambahkan event listener untuk menyimpan status saat checkbox berubah
+    googleCheckbox.addEventListener('change', saveCheckboxState);
+    bingCheckbox.addEventListener('change', saveCheckboxState);
+    braveCheckbox.addEventListener('change', saveCheckboxState);
+
     const performSearch = () => {
         const query = searchInput.value.trim(); // Ambil nilai input & hapus spasi ekstra
 
@@ -26,14 +58,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const isAndroid = /Android/i.test(navigator.userAgent);
 
         if (isAndroid) {
-            // Coba buka di jendela saat ini (mungkin akan ditangani oleh sistem Android untuk dibuka di browser default)
             if (googleCheckbox.checked) window.location.href = googleUrl;
-            if (bingCheckbox.checked && !googleCheckbox.checked) window.location.href = bingUrl; // Jika Google tidak dipilih
-            else if (bingCheckbox.checked && googleCheckbox.checked) window.open(bingUrl, '_blank'); // Buka di tab baru jika Google juga dipilih
-            if (braveCheckbox.checked && !googleCheckbox.checked && !bingCheckbox.checked) window.location.href = braveUrl; // Jika Google dan Bing tidak dipilih
-            else if (braveCheckbox.checked) window.open(braveUrl, '_blank'); // Buka di tab baru jika ada yang lain dipilih
+            if (bingCheckbox.checked && !googleCheckbox.checked) window.location.href = bingUrl;
+            else if (bingCheckbox.checked && googleCheckbox.checked) window.open(bingUrl, '_blank');
+            if (braveCheckbox.checked && !googleCheckbox.checked && !bingCheckbox.checked) window.location.href = braveUrl;
+            else if (braveCheckbox.checked) window.open(braveUrl, '_blank');
         } else {
-            // Perilaku untuk PC (buka di tab baru)
             if (googleCheckbox.checked) window.open(googleUrl, '_blank');
             if (bingCheckbox.checked) window.open(bingUrl, '_blank');
             if (braveCheckbox.checked) window.open(braveUrl, '_blank');
